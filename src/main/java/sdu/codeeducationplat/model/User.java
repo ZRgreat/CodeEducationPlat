@@ -1,43 +1,32 @@
 package sdu.codeeducationplat.model;
 
 import com.baomidou.mybatisplus.annotation.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
-import sdu.codeeducationplat.model.enums.ApplicationStatus;
-import sdu.codeeducationplat.model.enums.UserRole;
+import sdu.codeeducationplat.model.enums.RoleEnum;
+
 
 @Data
 @TableName("user")
 public class User {
-    @TableId(type = IdType.AUTO)
-    private Long id;  //id
+    @TableId(type = IdType.ASSIGN_UUID)
+    private String uid; //用户编号，采用UUID格式
 
-    @NotBlank
-    @Email
-    private String email; //用户邮箱（登录用）
+    private String email;  //用户邮箱（注册时使用）
 
-    @NotBlank
-    @Size(min = 8, max = 16, message = "密码长度必须在8-16位之间")
-    private String rawPassword; // 用户输入的原始密码（仅用于注册时）
-    private String password; // 数据库存储的加密密码
+    private String password; // 用户密码
 
-    @NotBlank
     private String nickname; //用户昵称
 
     private String avatar;  //用户头像（存储图片URL)
 
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;  //创建时间
+    private RoleEnum role; //用户身份，默认为student
 
-    @TableField("role")
-    private UserRole role;  // 角色（ADMIN, STUDENT, TEACHER）
+    private Boolean isActive;  //账户是否可用，默认为1
 
-    private Long schoolId;  // 绑定的学校ID（可为空）
-    private String name;  // 真实姓名（校园绑定后）
-    private String studentNum;  // 学号（校园绑定后）
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createdAt; //用户创建时间
 
-    private ApplicationStatus applicationStatus; // // 教师申请状态（PENDING, APPROVED, REJECTED）
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedAt;  //用户更新时间
 }
