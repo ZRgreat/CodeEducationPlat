@@ -1,5 +1,7 @@
 package sdu.codeeducationplat.controller;
 
+import io.jsonwebtoken.JwtException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import sdu.codeeducationplat.common.Result; // 确保正确导入 Result
 import sdu.codeeducationplat.dto.LoginRequest;
@@ -35,6 +37,7 @@ public class UserController {
      * @return 注册结果，成功返回空，失败抛出异常
      */
     @Operation(summary = "用户注册", description = "通过邮箱和密码注册新用户，角色默认为 STUDENT")
+    @SecurityRequirement(name = "")
     @PostMapping("/register")
     public Result<Void> register(@Valid @RequestBody RegisterRequest request) {
         userService.register(request);
@@ -47,6 +50,7 @@ public class UserController {
      * @return 登录结果，成功返回 JWT Token，失败抛出异常
      */
     @Operation(summary = "用户登录", description = "通过邮箱和密码登录，返回 JWT Token")
+    @SecurityRequirement(name = "")
     @PostMapping("/login")
     public Result<String> login(@RequestBody LoginRequest request) {
         User user = userService.login(request.getEmail(), request.getPassword());
@@ -107,7 +111,7 @@ public class UserController {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("无效的 Authorization 头");
+            throw new JwtException("无效的 Authorization 头");
         }
         return authHeader.substring(7);
     }

@@ -20,13 +20,13 @@ public class User {
 
     private String avatar;  //用户头像（存储图片URL)
 
-    private RoleEnum role; //用户身份，默认为student
+    private RoleEnum role; //用户身份，默认为user
 
     private Boolean isActive;  //账户是否可用，默认为1
 
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt; //用户创建时间
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;  //用户更新时间
 }

@@ -1,7 +1,9 @@
 package sdu.codeeducationplat.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import sdu.codeeducationplat.dto.RegisterRequest;
 import sdu.codeeducationplat.model.User;
 import sdu.codeeducationplat.mapper.UserMapper;
@@ -56,6 +58,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("邮箱或密码错误");
         }
+        if (!user.getIsActive()) {
+            throw new RuntimeException("账户已被禁用");
+        }
         return user;
     }
 
@@ -65,13 +70,19 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * @param nickname 新昵称
      * @throws RuntimeException 如果用户不存在
      */
+    @Transactional
     public void updateNickname(String uid, String nickname) {
         User user = getById(uid);
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
-        user.setNickname(nickname);
-        updateById(user);
+        if (nickname == null || nickname.trim().isEmpty()) {
+            throw new RuntimeException("昵称不能为空");
+        }
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getUid, uid)
+                .set(User::getNickname, nickname);
+        update(updateWrapper);
     }
 
     /**
@@ -111,6 +122,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * @throws RuntimeException 如果用户不存在
      */
     public void resetPassword(String uid, String newPassword) {
+        if (newPassword == null || newPassword.length() < 6) {
+            throw new RuntimeException("新密码长度必须至少 6 位");
+        }
         User user = getById(uid);
         if (user == null) {
             throw new RuntimeException("用户不存在");

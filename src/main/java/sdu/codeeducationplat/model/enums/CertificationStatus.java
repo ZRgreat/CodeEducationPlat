@@ -7,7 +7,7 @@ import lombok.Getter; //自动生成getCode()和getDescription()方法
 public enum CertificationStatus {
 
     REJECTED(0, "已拒绝"),
-    PASSED(1, "已通过"),
+    APPROVED(1, "已通过"),
     PENDING(2,"待审核");
 
     @EnumValue  // MyBatis-Plus 存储时使用该字段的值
