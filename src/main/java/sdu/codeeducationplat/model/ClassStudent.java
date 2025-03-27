@@ -24,9 +24,8 @@ public class ClassStudent {
     /**
      * 学生用户ID，外键，关联User.uid
      */
-    @NotBlank(message = "学生用户ID不能为空")
-    @Size(max = 36, message = "学生用户ID长度不能超过36")
-    private String uid;
+    @NotNull(message = "学生ID不能为空")
+    private Long studentId;
 
     /**
      * 创建时间

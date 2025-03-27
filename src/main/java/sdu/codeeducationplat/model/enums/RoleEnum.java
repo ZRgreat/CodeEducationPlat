@@ -3,9 +3,10 @@ package sdu.codeeducationplat.model.enums;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 
 public enum RoleEnum {
-    USER("user"),  // 普通用户
+    USER("user"),
     STUDENT("student"),
-    TEACHER("teacher");  // 教师
+    TEACHER("teacher"),
+    ADMIN("admin");// 教师
     @EnumValue // 标记存储到数据库的字段
     private final String value;
 

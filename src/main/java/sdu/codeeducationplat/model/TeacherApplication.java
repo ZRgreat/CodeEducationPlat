@@ -19,8 +19,8 @@ public class TeacherApplication {
      * 用户ID，外键，关联User.uid
      */
     @NotBlank(message = "用户ID不能为空")
-    @Size(max = 36, message = "用户ID长度不能超过36")
-    private String uid;
+    @Size(max = 6, message = "用户ID长度不能超过36")
+    private Long uid;
 
     /**
      * 学校ID，外键，关联School.schoolId
@@ -44,7 +44,6 @@ public class TeacherApplication {
     /**
      * 申请状态，可选值：pending, approved, rejected，默认pending
      */
-
     private CertificationStatus status;
 
     /**

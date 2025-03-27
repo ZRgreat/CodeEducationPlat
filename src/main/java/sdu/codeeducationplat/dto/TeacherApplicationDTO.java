@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class TeacherApplicationDTO {
     @NotBlank(message = "用户ID不能为空")
-    @Size(max = 36, message = "用户ID长度不能超过36")
-    private String uid;
+    @Size(max = 6, message = "用户ID长度不能超过36")
+    private Long uid;
 
     @NotNull(message = "学校ID不能为空")
     private Long schoolId;

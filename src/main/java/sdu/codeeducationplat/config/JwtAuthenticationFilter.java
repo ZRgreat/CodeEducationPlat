@@ -1,5 +1,8 @@
 package sdu.codeeducationplat.config;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import sdu.codeeducationplat.model.enums.RoleEnum;
 import sdu.codeeducationplat.util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,26 +14,59 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, jakarta.servlet.ServletException { // 添加 ServletException
+            throws IOException, jakarta.servlet.ServletException {
+        //跳过公开端点
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             try {
                 if (JwtUtil.isTokenValid(token)) {
-                    String uid = JwtUtil.getUidFromToken(token);
-                    String role = JwtUtil.getRoleFromToken(token);
+                    Claims claims = JwtUtil.parseToken(token);
+                    Object principal;
+                    List<RoleEnum> roles;
+
+                    // 判断 token 类型
+                    if (claims.containsKey("uid")) {
+                        // 用户 token
+                        Long uid = JwtUtil.getUidFromToken(token);
+                        roles = JwtUtil.getRolesFromToken(token);
+                        principal = uid;
+                    } else if (claims.containsKey("adminId")) {
+                        // 管理员 token
+                        Long adminId = JwtUtil.getAdminIdFromToken(token);
+                        RoleEnum role = JwtUtil.getRoleFromToken(token);
+                        roles = Collections.singletonList(role);
+                        principal = adminId;
+                    } else {
+                        throw new RuntimeException("Token 中缺少 uid 或 adminId");
+                    }
+
+                    // 确保角色列表不为空
+                    if (roles == null || roles.isEmpty()) {
+                        throw new RuntimeException("用户未分配角色");
+                    }
+
+                    // 将 List<RoleEnum> 转换为 List<SimpleGrantedAuthority>
+                    List<SimpleGrantedAuthority> authorities = roles.stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                            .collect(Collectors.toList());
+
+                    // 创建认证对象
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            uid, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
+                            principal, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-            } catch (Exception e) {
+            } catch (JwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid or expired token: " + e.getMessage());
+                response.setContentType("application/json");
+                response.getWriter().write("{\"code\": 401, \"msg\": \"Invalid or expired token: " + e.getMessage() + "\", \"data\": null}");
                 return;
             }
         }

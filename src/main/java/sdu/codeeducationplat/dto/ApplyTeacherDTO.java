@@ -1,21 +1,14 @@
-package sdu.codeeducationplat.model;
+package sdu.codeeducationplat.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
-@TableName("teacher")
-public class Teacher {
-
-    @TableId(type = IdType.AUTO)
-    private Long teacherId;
-
+public class ApplyTeacherDTO {
     @NotBlank(message = "用户ID不能为空")
-    @Size(max = 6, message = "用户ID长度不能超过36")
+    @Size(max = 6, message = "用户ID长度不能超过6")
     private Long uid;
 
     @NotNull(message = "学校ID不能为空")
@@ -25,6 +18,6 @@ public class Teacher {
     @Size(max = 50, message = "真实姓名长度不能超过50")
     private String realName;
 
-    @TableField(value = "created_at", fill = FieldFill.INSERT)
-    private LocalDateTime createdAt;
+    @Size(max = 255, message = "证明材料URL长度不能超过255")
+    private String proofImage;
 }

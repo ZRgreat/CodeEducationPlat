@@ -21,6 +21,9 @@ public class Class {
     @NotNull(message = "教师ID不能为空")
     private Long teacherId;
 
+    @NotNull(message = "学校ID不能为空")
+    private Long schoolId;
+
     /**
      * 班级名称
      */
@@ -33,4 +36,9 @@ public class Class {
      */
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
+
+    @NotBlank(message = "绑定码不能为空")
+    @Size(max = 20, message = "绑定码长度不能超过20")
+    private String bindingCode;
+
 }
