@@ -13,12 +13,12 @@ public class JwtUtil {
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 7 * 24 * 3600_000; // 7 天
 
-    // 生成 JWT
+    // 为用户生成JWT
     public static String generateToken(Long uid, List<RoleEnum> roles) {
-        List<String> roleNames = roles.stream().map(RoleEnum::name).collect(Collectors.toList());
+        List<String> roleDescriptions = roles.stream().map(RoleEnum::getDescription).collect(Collectors.toList());
         Map<String, Object> claims = new HashMap<>();
         claims.put("uid", uid);
-        claims.put("roles", roleNames);
+        claims.put("roles", roleDescriptions);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -27,6 +27,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    //为管理员生成JWT
     public static String generateToken(Long adminId, RoleEnum role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("adminId", adminId);
@@ -39,7 +40,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 解析 JWT
+    // 解析JWT
     public static Claims parseToken(String token) throws JwtException {
         try {
              Claims claims =  Jwts.parser() // 直接使用 parser()
@@ -59,7 +60,7 @@ public class JwtUtil {
         }
     }
 
-    // 获取 UID
+    // 获取UID
     public static Long getUidFromToken(String token) {
         return parseToken(token).get("uid", Long.class);
     }
@@ -69,17 +70,18 @@ public class JwtUtil {
         return parseToken(token).get("adminId", Long.class);
     }
 
-    // 获取用户角色
+    // 获取用户角色列表
     public static List<RoleEnum> getRolesFromToken(String token) {
         @SuppressWarnings("unchecked")
         List<String> roleNames = parseToken(token).get("roles", List.class);
-        return roleNames.stream().map(RoleEnum::valueOf).collect(Collectors.toList());
+        return roleNames.stream().map(RoleEnum::fromDescription).collect(Collectors.toList());
     }
+
     // 获取管理员角色
     public static RoleEnum getRoleFromToken(String token) {
         @SuppressWarnings("unchecked")
         String role = parseToken(token).get("role", String.class); // 获取字符串形式的 role
-        return RoleEnum.valueOf(role); // 转换为 RoleEnum
+        return RoleEnum.fromDescription(role); // 转换为 RoleEnum
     }
 
     // 验证 Token 是否有效

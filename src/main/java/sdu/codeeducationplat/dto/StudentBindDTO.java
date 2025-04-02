@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ApplyStudentDTO {
+public class StudentBindDTO {
+
     @NotBlank(message = "绑定码不能为空")
     @Size(max = 20, message = "绑定码长度不能超过20")
     private String bindCode;
@@ -14,6 +15,7 @@ public class ApplyStudentDTO {
     @NotNull(message = "学校ID不能为空")
     private Long schoolId;
 
+    @NotBlank(message = "学号不能为空")
     @Size(max = 20, message = "学号长度不能超过20")
     private String studentNumber;
 

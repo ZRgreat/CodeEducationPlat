@@ -25,6 +25,10 @@ public class Teacher {
     @Size(max = 50, message = "真实姓名长度不能超过50")
     private String realName;
 
+    @NotBlank(message = "绑定码不能为空")
+    @Size(max = 20, message = "绑定码长度不能超过20")
+    private String bindCode;
+
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

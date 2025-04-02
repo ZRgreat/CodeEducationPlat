@@ -29,4 +29,7 @@ public class Student {
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
+
+    @TableField(exist = false)
+    private String schoolName;
 }

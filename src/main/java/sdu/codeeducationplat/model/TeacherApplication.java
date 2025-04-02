@@ -12,13 +12,17 @@ import java.time.LocalDateTime;
 @Data
 @TableName("teacher_application")
 public class TeacherApplication {
+
+    /**
+     * 主键
+     */
     @TableId(type = IdType.AUTO) // 自增主键
     private Long applicationId;
 
     /**
      * 用户ID，外键，关联User.uid
      */
-    @NotBlank(message = "用户ID不能为空")
+    @NotNull(message = "用户ID不能为空")
     @Size(max = 6, message = "用户ID长度不能超过36")
     private Long uid;
 
@@ -52,4 +56,7 @@ public class TeacherApplication {
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
+    // schoolName 字段，不存储到数据库
+    @TableField(exist = false)
+    private String schoolName;
 }

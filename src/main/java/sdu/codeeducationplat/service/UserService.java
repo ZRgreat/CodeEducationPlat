@@ -2,9 +2,9 @@ package sdu.codeeducationplat.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -14,7 +14,6 @@ import sdu.codeeducationplat.mapper.TeacherApplicationMapper;
 import sdu.codeeducationplat.mapper.UserRoleMapper;
 import sdu.codeeducationplat.model.User;
 import sdu.codeeducationplat.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sdu.codeeducationplat.model.UserRole;
 import sdu.codeeducationplat.model.enums.RoleEnum;
@@ -27,20 +26,12 @@ import java.util.stream.Collectors;
  * 用户服务类，处理用户相关的业务逻辑
  */
 @Service
+@RequiredArgsConstructor
 public class UserService extends ServiceImpl<UserMapper, User> {
 
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserRoleService userRoleService;
-    @Autowired
-    private UserRoleMapper userRoleMapper;
-    @Autowired
-    private StudentMapper studentMapper;
-    @Autowired
-    private TeacherApplicationMapper teacherApplicationMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
+    private final UserRoleService userRoleService;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 注册新用户
@@ -159,7 +150,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * 用户注销（逻辑删除）
      * @param uid
      */
-    public void deactivateUser(Long uid) {
+    public void deleteUser(Long uid) {
         this.removeById(uid);
     }
 
@@ -201,6 +192,5 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             updateById(user);
         }
     }
-
 
 }
