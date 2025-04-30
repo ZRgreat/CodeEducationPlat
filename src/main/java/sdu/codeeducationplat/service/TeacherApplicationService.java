@@ -12,9 +12,13 @@ import org.springframework.util.StringUtils;
 import sdu.codeeducationplat.dto.ApplyTeacherDTO;
 import sdu.codeeducationplat.dto.TeacherApplicationDTO;
 import sdu.codeeducationplat.mapper.TeacherApplicationMapper;
-import sdu.codeeducationplat.model.*;
+import sdu.codeeducationplat.mapper.SchoolMapper;
 import sdu.codeeducationplat.model.enums.CertificationStatus;
 import sdu.codeeducationplat.model.enums.RoleEnum;
+import sdu.codeeducationplat.model.school.School;
+import sdu.codeeducationplat.model.user.Teacher;
+import sdu.codeeducationplat.model.user.TeacherApplication;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +30,7 @@ public class TeacherApplicationService extends ServiceImpl<TeacherApplicationMap
     private final UserRoleService userRoleService;
     private final TeacherService teacherService;
     private final TeacherApplicationMapper teacherApplicationMapper;
+    private final SchoolMapper schoolMapper;
 
     /**
      * 判断当前用户是否已拥有教师权限
@@ -128,7 +133,11 @@ public class TeacherApplicationService extends ServiceImpl<TeacherApplicationMap
             );
         }
 
+        // 使用 selectCountWithSchool 计算总数
+        Long total = teacherApplicationMapper.selectCountWithSchool(wrapper);
         Page<TeacherApplication> records = teacherApplicationMapper.selectPageWithSchool(applicationPage, wrapper);
+        records.setTotal(total);
+        records.setPages((long) Math.ceil((double) total / size));
 
         List<TeacherApplicationDTO> dtoList = records.getRecords().stream().map(application -> {
             TeacherApplicationDTO dto = new TeacherApplicationDTO();
@@ -140,10 +149,48 @@ public class TeacherApplicationService extends ServiceImpl<TeacherApplicationMap
         dtoPage.setRecords(dtoList);
         dtoPage.setCurrent(records.getCurrent());
         dtoPage.setSize(records.getSize());
-        dtoPage.setTotal(records.getTotal());
-        dtoPage.setPages(records.getPages());
+        dtoPage.setTotal(total);
+        dtoPage.setPages((long) Math.ceil((double) total / size));
 
         return dtoPage;
+    }
+
+    public TeacherApplicationDTO getLatestApplication(Long uid) {
+        TeacherApplication app = teacherApplicationMapper.selectLatestByUid(uid);
+        if (app == null) return null;
+        TeacherApplicationDTO dto = new TeacherApplicationDTO();
+        BeanUtils.copyProperties(app, dto);
+        School school = schoolMapper.selectById(app.getSchoolId());
+        dto.setSchoolName(school != null ? school.getName() : "未知学校");
+        return dto;
+    }
+
+    @Transactional
+    public void updateTeacherApplication(Long uid, TeacherApplicationDTO dto) {
+        TeacherApplication existing = teacherApplicationMapper.selectLatestByUid(uid);
+        if (existing == null) {
+            throw new RuntimeException("尚未提交教师申请，无法修改");
+        }
+        if (existing.getStatus() == CertificationStatus.APPROVED) {
+            throw new RuntimeException("您的申请已通过，不能修改");
+        }
+
+        TeacherApplication updated = new TeacherApplication();
+        updated.setApplicationId(existing.getApplicationId());
+        updated.setUid(uid);
+        updated.setSchoolId(dto.getSchoolId());
+        updated.setRealName(dto.getRealName());
+        updated.setProofImage(dto.getProofImage());
+        updated.setStatus(CertificationStatus.PENDING); // 重置为待审核
+
+        teacherApplicationMapper.updateById(updated);
+    }
+
+    public long countPendingApplications() {
+        return teacherApplicationMapper.selectCount(
+                new LambdaQueryWrapper<TeacherApplication>()
+                        .eq(TeacherApplication::getStatus, CertificationStatus.PENDING)
+        );
     }
 
 }

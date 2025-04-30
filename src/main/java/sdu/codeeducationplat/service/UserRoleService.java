@@ -1,12 +1,11 @@
 package sdu.codeeducationplat.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdu.codeeducationplat.mapper.UserRoleMapper;
-import sdu.codeeducationplat.model.UserRole;
+import sdu.codeeducationplat.model.user.UserRole;
 import sdu.codeeducationplat.model.enums.RoleEnum;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,7 +1,6 @@
 package sdu.codeeducationplat.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -20,10 +19,6 @@ public enum RoleEnum {
         this.description = description;
     }
 
-    @JsonValue
-    public String getDescription() {
-        return description;
-    }
     public static RoleEnum fromValue(String value) {
         if (value == null) {
             return null;
@@ -46,5 +41,10 @@ public enum RoleEnum {
             }
         }
         throw new IllegalArgumentException("Unknown role description: " + description);
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

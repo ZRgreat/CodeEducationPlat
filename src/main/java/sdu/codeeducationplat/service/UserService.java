@@ -3,20 +3,19 @@ package sdu.codeeducationplat.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import sdu.codeeducationplat.dto.*;
-import sdu.codeeducationplat.mapper.StudentMapper;
-import sdu.codeeducationplat.mapper.TeacherApplicationMapper;
-import sdu.codeeducationplat.mapper.UserRoleMapper;
-import sdu.codeeducationplat.model.User;
+import sdu.codeeducationplat.model.user.User;
 import sdu.codeeducationplat.mapper.UserMapper;
 import org.springframework.stereotype.Service;
-import sdu.codeeducationplat.model.UserRole;
+import sdu.codeeducationplat.model.user.UserRole;
 import sdu.codeeducationplat.model.enums.RoleEnum;
+import sdu.codeeducationplat.util.JwtUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,7 +38,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * @throws RuntimeException 如果邮箱已注册
      */
     @Transactional(rollbackFor = Exception.class)
-    public User register(RegisterRequestDTO dto) {
+    public UserWithRoleDTO register(RegisterRequestDTO dto) {
         if (getOne(new QueryWrapper<User>().eq("email", dto.getEmail())) != null) {
             throw new RuntimeException("邮箱已被注册");
         }
@@ -58,7 +57,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         userRole.setCreatedAt(LocalDateTime.now());
         userRoleService.save(userRole);
 
-        return user;
+        String token = JwtUtil.generateToken(user.getUid(), RoleEnum.USER);
+        UserWithRoleDTO result = new UserWithRoleDTO();
+        result.setUid(user.getUid());
+        result.setEmail(user.getEmail());
+        result.setNickname(user.getNickname());
+        result.setToken(token);
+        result.setRoles(List.of(RoleEnum.USER));
+        return result;
     }
 
     /**
@@ -70,6 +76,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      */
     @Transactional(rollbackFor = Exception.class)
     public UserWithRoleDTO login(String email, String password) {
+        //1.查询用户
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, email);
         User user = userMapper.selectOne(queryWrapper);
@@ -79,17 +86,15 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (!user.getIsActive()) {
             throw new RuntimeException("账户已被禁用");
         }
-        //在userRole中读取
-        List<UserRole> userRoles = userRoleService.list(new QueryWrapper<UserRole>().eq("uid", user.getUid()));        UserWithRoleDTO dto = new UserWithRoleDTO();
-        dto.setUid(user.getUid());
-        dto.setEmail(user.getEmail());
-        dto.setNickname(user.getNickname());
-        // 提取角色列表
+        //2.查询用户角色列表
+        List<UserRole> userRoles = userRoleService.list(new QueryWrapper<UserRole>().eq("uid", user.getUid()));
         List<RoleEnum> roles = userRoles.stream()
                 .map(UserRole::getRole) // 假设 UserRole 有一个 getRole 方法返回 RoleEnum
                 .collect(Collectors.toList());
-        dto.setRoles(roles);
-        return dto;
+        //3.生成JWT Token
+        String token = JwtUtil.generateToken(user.getUid(), roles);
+        //4.构建返回对象
+        return UserWithRoleDTO.from(user, roles, token);
     }
 
     /**
@@ -191,6 +196,22 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             user.setPassword(passwordEncoder.encode("123456"));
             updateById(user);
         }
+    }
+
+    public Page<User> getUserPage(String keyword, int page, int size) {
+        Page<User> userPage = new Page<>(page, size);
+
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(keyword)) {
+            wrapper.and(w -> w
+                    .like(User::getNickname, keyword)
+                    .or()
+                    .like(User::getEmail, keyword)
+            );
+        }
+
+        // 确保分页查询生效
+        return userMapper.selectPage(userPage, wrapper);
     }
 
 }

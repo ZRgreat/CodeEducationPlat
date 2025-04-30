@@ -1,4 +1,4 @@
-package sdu.codeeducationplat.model;
+package sdu.codeeducationplat.model.school;
 
 import com.baomidou.mybatisplus.annotation.*;
 import jakarta.validation.constraints.NotBlank;

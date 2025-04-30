@@ -1,9 +1,7 @@
-package sdu.codeeducationplat.model;
+package sdu.codeeducationplat.model.course;
 
 import com.baomidou.mybatisplus.annotation.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;

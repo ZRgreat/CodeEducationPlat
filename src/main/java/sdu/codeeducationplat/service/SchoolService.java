@@ -4,18 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import sdu.codeeducationplat.dto.SchoolDTO;
 import sdu.codeeducationplat.mapper.SchoolMapper;
-import sdu.codeeducationplat.model.School;
+import sdu.codeeducationplat.model.school.School;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SchoolService extends ServiceImpl<SchoolMapper, School> {
 
+    private final SchoolMapper schoolMapper;
     /**
      * 添加学校信息
      * @param dto 添加请求
@@ -75,6 +78,21 @@ public class SchoolService extends ServiceImpl<SchoolMapper, School> {
             wrapper.like(School::getName, keyword).or().like(School::getCode, keyword);
         }
         return list(wrapper);
+    }
+
+    public Page<School> getSchoolPage(String keyword, int page, int size) {
+        Page<School> schoolPage = new Page<>(page, size);
+
+        LambdaQueryWrapper<School> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(keyword)) {
+            wrapper.and(w -> w
+                    .like(School::getName, keyword)
+                    .or()
+                    .like(School::getCode, keyword)
+            );
+        }
+
+        return schoolMapper.selectPage(schoolPage, wrapper);
     }
 
 

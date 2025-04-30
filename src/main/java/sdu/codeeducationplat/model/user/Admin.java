@@ -1,4 +1,4 @@
-package sdu.codeeducationplat.model;
+package sdu.codeeducationplat.model.user;
 
 import com.baomidou.mybatisplus.annotation.*;
 import jakarta.validation.constraints.Email;

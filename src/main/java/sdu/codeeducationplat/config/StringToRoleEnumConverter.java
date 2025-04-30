@@ -12,10 +12,6 @@ public class StringToRoleEnumConverter implements Converter<String, RoleEnum> {
         if (source == null) {
             return null;
         }
-        try {
-            return RoleEnum.fromDescription(source);
-        } catch (IllegalArgumentException e) {
-            return RoleEnum.fromValue(source);
-        }
+        return RoleEnum.fromValue(source);
     }
 }

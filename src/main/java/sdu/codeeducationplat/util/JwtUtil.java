@@ -27,11 +27,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    //为管理员生成JWT
+    // 为管理员生成JWT
     public static String generateToken(Long adminId, RoleEnum role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("adminId", adminId);
-        claims.put("role", role);
+        claims.put("role", role.getValue()); // 使用 value 而不是 RoleEnum 对象
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -43,11 +43,11 @@ public class JwtUtil {
     // 解析JWT
     public static Claims parseToken(String token) throws JwtException {
         try {
-             Claims claims =  Jwts.parser() // 直接使用 parser()
-                    .verifyWith(SECRET_KEY) // 设置签名密钥
-                    .build() // 构建 JwtParser
-                    .parseSignedClaims(token) // 解析并验证签名
-                    .getPayload(); // 获取 Claims
+            Claims claims = Jwts.parser()
+                    .verifyWith(SECRET_KEY)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
             return claims;
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("Token 已过期", e);
@@ -65,7 +65,7 @@ public class JwtUtil {
         return parseToken(token).get("uid", Long.class);
     }
 
-    //获取AdminId
+    // 获取AdminId
     public static Long getAdminIdFromToken(String token) {
         return parseToken(token).get("adminId", Long.class);
     }
@@ -79,9 +79,8 @@ public class JwtUtil {
 
     // 获取管理员角色
     public static RoleEnum getRoleFromToken(String token) {
-        @SuppressWarnings("unchecked")
-        String role = parseToken(token).get("role", String.class); // 获取字符串形式的 role
-        return RoleEnum.fromDescription(role); // 转换为 RoleEnum
+        String role = parseToken(token).get("role", String.class);
+        return RoleEnum.fromValue(role); // 使用 value 而不是 description
     }
 
     // 验证 Token 是否有效

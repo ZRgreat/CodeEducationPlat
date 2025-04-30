@@ -13,11 +13,7 @@ public class StringToCertificationStatusConverter implements Converter<String, C
             return null;
         }
         for (CertificationStatus status : CertificationStatus.values()) {
-            if (status.getDescription().equals(source)) {
-                return status;
-            }
-            // 同时支持 name() 和 value()
-            if (status.name().equals(source) || status.getValue().equals(source)) {
+            if (status.getValue().equals(source)) {
                 return status;
             }
         }

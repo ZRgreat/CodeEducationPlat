@@ -1,15 +1,13 @@
 package sdu.codeeducationplat.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdu.codeeducationplat.mapper.AdminMapper;
-import sdu.codeeducationplat.model.Admin;
-import sdu.codeeducationplat.model.User;
+import sdu.codeeducationplat.model.user.Admin;
 
 @Service
 public class AdminService extends ServiceImpl<AdminMapper, Admin> {

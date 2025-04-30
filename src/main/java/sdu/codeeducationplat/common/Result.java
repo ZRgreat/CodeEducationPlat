@@ -1,6 +1,7 @@
 package sdu.codeeducationplat.common;
 
 import lombok.Data;
+import sdu.codeeducationplat.model.enums.ResultCode;
 
 @Data
 public class Result<T> {
@@ -11,8 +12,8 @@ public class Result<T> {
     // 成功响应
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
-        result.setCode(200);
-        result.setMsg("操作成功");
+        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setMsg(ResultCode.SUCCESS.getDefaultMsg());
         result.setData(data);
         return result;
     }
@@ -22,17 +23,20 @@ public class Result<T> {
         return success(null);
     }
 
-    // 错误响应
-    public static <T> Result<T> error(int code, String msg, T data) {
+    // 错误响应（无数据）
+    public static <T> Result<T> error(ResultCode resultCode, String msg) {
         Result<T> result = new Result<>();
-        result.setCode(code);
+        result.setCode(resultCode.getCode());
         result.setMsg(msg);
-        result.setData(data);
+        result.setData(null); // data 置为 null
         return result;
     }
 
-    // 错误响应（无数据）
-    public static <T> Result<T> error(int code, String msg) {
-        return error(code, msg, null);
+    public static <T> Result<T> error(ResultCode resultCode) {
+        return error(resultCode, resultCode.getDefaultMsg());
+    }
+
+    public static <T> Result<T> error(String msg) {
+        return error(ResultCode.SERVER_ERROR, msg);
     }
 }

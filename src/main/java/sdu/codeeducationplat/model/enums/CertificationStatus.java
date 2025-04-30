@@ -2,12 +2,10 @@ package sdu.codeeducationplat.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.Getter; //自动生成getCode()和getDescription()方法
+import lombok.Getter;
 
 @Getter
 public enum CertificationStatus implements IEnum<String> {
-
     PENDING("pending", "待审核"),
     APPROVED("approved", "已通过"),
     REJECTED("rejected", "已拒绝");
@@ -21,8 +19,8 @@ public enum CertificationStatus implements IEnum<String> {
         this.description = description;
     }
 
-    @JsonValue
-    public String getDescription() {
-        return description;
+    @Override
+    public String toString() {
+        return value;
     }
 }

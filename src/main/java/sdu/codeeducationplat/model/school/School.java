@@ -1,4 +1,4 @@
-package sdu.codeeducationplat.model;
+package sdu.codeeducationplat.model.school;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

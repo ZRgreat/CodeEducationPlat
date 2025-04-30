@@ -6,16 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdu.codeeducationplat.dto.ApplyStudentDTO;
+import sdu.codeeducationplat.dto.StudentBindingDTO;
 import sdu.codeeducationplat.mapper.StudentMapper;
-import sdu.codeeducationplat.model.Student;
-import sdu.codeeducationplat.model.Teacher;
+import sdu.codeeducationplat.model.user.Student;
+import sdu.codeeducationplat.model.user.Teacher;
 import sdu.codeeducationplat.model.enums.RoleEnum;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService extends ServiceImpl<StudentMapper, Student> {
 
-    private final StudentMapper studentMapper;
     private final TeacherService teacherService;
     private final UserRoleService userRoleService;
 
@@ -53,4 +55,9 @@ public class StudentService extends ServiceImpl<StudentMapper, Student> {
         // 更新用户角色为 STUDENT
         userRoleService.saveOrUpdateUserRole(uid, RoleEnum.STUDENT);
     }
+
+    public List<StudentBindingDTO> getStudentBindings(Long uid) {
+        return getBaseMapper().getStudentBindings(uid);
+    }
+
 }

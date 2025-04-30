@@ -5,7 +5,7 @@
 <mapper namespace="sdu.codeeducationplat.mapper.TeacherApplicationMapper">
 
     <!-- 分页查询教师申请，关联学校表获取 school_name，支持动态筛选条件 -->
-    <select id="selectPageWithSchool" resultType="sdu.codeeducationplat.model.TeacherApplication">
+    <select id="selectPageWithSchool" resultType="sdu.codeeducationplat.model.user.TeacherApplication">
         SELECT ta.*, s.name AS school_name
         FROM teacher_application ta
         LEFT JOIN school s ON ta.school_id = s.school_id
@@ -17,4 +17,22 @@
         ORDER BY FIELD(ta.status, 'pending', 'approved', 'rejected')
     </select>
 
+    <!-- 计算总数,关联 school 表 -->
+    <select id="selectCountWithSchool" resultType="long">
+        SELECT COUNT(*)
+        FROM teacher_application ta
+        LEFT JOIN school s ON ta.school_id = s.school_id
+        <where>
+            <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''">
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLatestByUid" resultType="sdu.codeeducationplat.model.user.TeacherApplication">
+        SELECT * FROM teacher_application
+        WHERE uid = #{uid}
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
 </mapper>
