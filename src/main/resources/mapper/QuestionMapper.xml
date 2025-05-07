@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdu.codeeducationplat.mapper.question.QuestionMapper">
+
+    <!-- 分页查询题目，支持动态筛选条件和知识点筛选 -->
+    <select id="selectPageWithCategory" resultType="sdu.codeeducationplat.model.question.Question">
+        SELECT q.*
+        FROM question q
+        <if test="categoryId != null">
+            INNER JOIN question_category qc ON q.question_id = qc.question_id
+            AND qc.category_id = #{categoryId}
+        </if>
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''">
+            <where>
+                #{ew.customSqlSegment}
+            </where>
+        </if>
+    </select>
+
+</mapper>

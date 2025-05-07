@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
-import sdu.codeeducationplat.dto.TeacherApplicationDTO;
+import sdu.codeeducationplat.dto.identity.TeacherApplicationDTO;
 import sdu.codeeducationplat.model.enums.CertificationStatus;
 import sdu.codeeducationplat.model.enums.ResultCode;
-import sdu.codeeducationplat.service.TeacherApplicationService;
+import sdu.codeeducationplat.service.user.TeacherApplicationService;
 
 @Tag(name = "管理员教师申请管理", description = "管理员对教师申请的审核接口")
 @RestController

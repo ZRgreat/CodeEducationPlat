@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
 import sdu.codeeducationplat.model.user.User;
 import sdu.codeeducationplat.model.enums.ResultCode;
-import sdu.codeeducationplat.service.UserService;
-
-import java.util.List;
+import sdu.codeeducationplat.service.user.UserService;
 
 @Tag(name = "管理员用户管理", description = "管理员对用户的管理接口")
 @RestController

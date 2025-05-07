@@ -15,10 +15,10 @@ public class JwtUtil {
 
     // 为用户生成JWT
     public static String generateToken(Long uid, List<RoleEnum> roles) {
-        List<String> roleDescriptions = roles.stream().map(RoleEnum::getDescription).collect(Collectors.toList());
+        List<String> roleValues = roles.stream().map(RoleEnum::getValue).collect(Collectors.toList());
         Map<String, Object> claims = new HashMap<>();
         claims.put("uid", uid);
-        claims.put("roles", roleDescriptions);
+        claims.put("roles", roleValues); // 使用 value
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -31,7 +31,7 @@ public class JwtUtil {
     public static String generateToken(Long adminId, RoleEnum role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("adminId", adminId);
-        claims.put("role", role.getValue()); // 使用 value 而不是 RoleEnum 对象
+        claims.put("role", role.getValue());
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -73,14 +73,14 @@ public class JwtUtil {
     // 获取用户角色列表
     public static List<RoleEnum> getRolesFromToken(String token) {
         @SuppressWarnings("unchecked")
-        List<String> roleNames = parseToken(token).get("roles", List.class);
-        return roleNames.stream().map(RoleEnum::fromDescription).collect(Collectors.toList());
+        List<String> roleValues = parseToken(token).get("roles", List.class);
+        return roleValues.stream().map(RoleEnum::fromValue).collect(Collectors.toList());
     }
 
     // 获取管理员角色
     public static RoleEnum getRoleFromToken(String token) {
         String role = parseToken(token).get("role", String.class);
-        return RoleEnum.fromValue(role); // 使用 value 而不是 description
+        return RoleEnum.fromValue(role);
     }
 
     // 验证 Token 是否有效

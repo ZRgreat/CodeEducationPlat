@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
-import sdu.codeeducationplat.model.tag.Category;
-import sdu.codeeducationplat.service.CategoryService;
+import sdu.codeeducationplat.model.question.Category;
+import sdu.codeeducationplat.service.question.CategoryService;
 
 @Tag(name = "管理员分类管理", description = "管理员对分类的管理接口")
 @RestController

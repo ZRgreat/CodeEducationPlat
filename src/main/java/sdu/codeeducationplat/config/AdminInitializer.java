@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import sdu.codeeducationplat.model.user.Admin;
-import sdu.codeeducationplat.service.AdminService;
+import sdu.codeeducationplat.service.user.AdminService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.time.LocalDateTime;

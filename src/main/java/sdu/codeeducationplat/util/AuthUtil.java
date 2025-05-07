@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import sdu.codeeducationplat.common.Result;
 import sdu.codeeducationplat.model.enums.ResultCode;
 import sdu.codeeducationplat.model.user.Teacher;
-import sdu.codeeducationplat.service.TeacherService;
+import sdu.codeeducationplat.service.user.TeacherService;
 
 @Slf4j
 public class AuthUtil {

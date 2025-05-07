@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sdu.codeeducationplat.mapper.TeacherApplicationMapper">
+<mapper namespace="sdu.codeeducationplat.mapper.user.TeacherApplicationMapper">
 
     <!-- 分页查询教师申请，关联学校表获取 school_name，支持动态筛选条件 -->
     <select id="selectPageWithSchool" resultType="sdu.codeeducationplat.model.user.TeacherApplication">

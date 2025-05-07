@@ -1,6 +1,7 @@
 package sdu.codeeducationplat.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
@@ -21,14 +22,13 @@ public enum Difficulty {
     }
 
     @JsonValue
-    public String getDescription() {
-        return description;
+    public String getValue() {
+        return value;
     }
 
+    @JsonCreator
     public static Difficulty fromValue(String value) {
-        if (value == null) {
-            return null;
-        }
+        if (value == null) return null;
         for (Difficulty difficulty : values()) {
             if (difficulty.value.equalsIgnoreCase(value)) {
                 return difficulty;

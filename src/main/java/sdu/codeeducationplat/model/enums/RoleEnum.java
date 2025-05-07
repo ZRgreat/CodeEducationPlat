@@ -1,6 +1,8 @@
 package sdu.codeeducationplat.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -19,10 +21,14 @@ public enum RoleEnum {
         this.description = description;
     }
 
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
     public static RoleEnum fromValue(String value) {
-        if (value == null) {
-            return null;
-        }
+        if (value == null) return null;
         for (RoleEnum role : values()) {
             if (role.value.equalsIgnoreCase(value)) {
                 return role;
@@ -32,9 +38,7 @@ public enum RoleEnum {
     }
 
     public static RoleEnum fromDescription(String description) {
-        if (description == null) {
-            return null;
-        }
+        if (description == null) return null;
         for (RoleEnum role : values()) {
             if (role.description.equals(description)) {
                 return role;

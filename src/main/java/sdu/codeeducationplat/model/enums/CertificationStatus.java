@@ -2,6 +2,8 @@ package sdu.codeeducationplat.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +19,22 @@ public enum CertificationStatus implements IEnum<String> {
     CertificationStatus(String value, String description) {
         this.value = value;
         this.description = description;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
+    public static CertificationStatus fromValue(String value) {
+        if (value == null) return null;
+        for (CertificationStatus status : values()) {
+            if (status.value.equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Invalid CertificationStatus value: " + value);
     }
 
     @Override

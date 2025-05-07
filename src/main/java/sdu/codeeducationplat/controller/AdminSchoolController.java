@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
-import sdu.codeeducationplat.dto.SchoolDTO;
+import sdu.codeeducationplat.dto.identity.SchoolDTO;
 import sdu.codeeducationplat.model.school.School;
 import sdu.codeeducationplat.model.enums.ResultCode;
-import sdu.codeeducationplat.service.SchoolService;
+import sdu.codeeducationplat.service.school.SchoolService;
 
 @Tag(name = "管理员学校管理", description = "管理员对学校的管理接口")
 @RestController

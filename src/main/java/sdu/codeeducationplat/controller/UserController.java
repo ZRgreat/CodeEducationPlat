@@ -7,11 +7,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
-import sdu.codeeducationplat.dto.*;
+import sdu.codeeducationplat.dto.identity.*;
 import sdu.codeeducationplat.model.enums.ResultCode;
-import sdu.codeeducationplat.service.StudentService;
-import sdu.codeeducationplat.service.TeacherApplicationService;
-import sdu.codeeducationplat.service.UserService;
+import sdu.codeeducationplat.service.user.StudentService;
+import sdu.codeeducationplat.service.user.TeacherApplicationService;
+import sdu.codeeducationplat.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 

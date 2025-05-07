@@ -1,5 +1,6 @@
 package sdu.codeeducationplat.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,17 +8,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import sdu.codeeducationplat.common.Result;
-import sdu.codeeducationplat.dto.LoginRequestDTO;
-import sdu.codeeducationplat.dto.RegisterRequestDTO;
-import sdu.codeeducationplat.dto.UserWithRoleDTO;
+import sdu.codeeducationplat.dto.identity.LoginRequestDTO;
+import sdu.codeeducationplat.dto.identity.RegisterRequestDTO;
+import sdu.codeeducationplat.dto.identity.UserWithRoleDTO;
 import sdu.codeeducationplat.model.enums.RoleEnum;
+import sdu.codeeducationplat.model.question.Category;
 import sdu.codeeducationplat.model.user.Admin;
 import sdu.codeeducationplat.model.school.School;
-import sdu.codeeducationplat.model.user.User;
 import sdu.codeeducationplat.model.enums.ResultCode;
-import sdu.codeeducationplat.service.AdminService;
-import sdu.codeeducationplat.service.SchoolService;
-import sdu.codeeducationplat.service.UserService;
+import sdu.codeeducationplat.service.user.AdminService;
+import sdu.codeeducationplat.service.question.CategoryService;
+import sdu.codeeducationplat.service.school.SchoolService;
+import sdu.codeeducationplat.service.user.UserService;
 import sdu.codeeducationplat.util.JwtUtil;
 
 import java.util.List;
@@ -87,5 +89,19 @@ public class PublicController {
         List<School> schools = schoolService.listSchoolsByKeyword(keyword);
         log.info("查询学校列表成功，返回学校数量：{}", schools.size());
         return Result.success(schools);
+    }
+
+    private final CategoryService categoryService;
+
+    @Operation(summary = "查询所有分类", description = "获取所有分类，支持分页和关键词搜索")
+    @GetMapping("/categories")
+    public Result<Page<Category>> getCategories(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("获取分类列表，关键字：{}，页码：{}，每页大小：{}", keyword, page, size);
+        Page<Category> result = categoryService.getCategoryPage(keyword, page, size);
+        log.info("获取分类列表成功，返回分类数量：{}", result.getTotal());
+        return Result.success(result);
     }
 }
